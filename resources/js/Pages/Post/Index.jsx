@@ -1,8 +1,15 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head } from "@inertiajs/react";
+import { useEffect } from "react";
+import { useInView } from "react-intersection-observer";
 
 export default function Index({ auth, posts }) {
-    // console.log(posts);
+    const { ref, inView, entry } = useInView({});
+
+    useEffect(() => {
+        console.log(inView);
+    }, [inView]);
+
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -25,6 +32,7 @@ export default function Index({ auth, posts }) {
                         </div>
                     );
                 })}
+                <div ref={ref}></div>
             </div>
         </AuthenticatedLayout>
     );
