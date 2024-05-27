@@ -1,5 +1,5 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head, router } from "@inertiajs/react";
+import { Head } from "@inertiajs/react";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
@@ -7,11 +7,14 @@ import { useInView } from "react-intersection-observer";
 export default function Index({ auth, posts }) {
     const { ref, inView } = useInView({});
     const [postsData, setPostsData] = useState(posts.data);
+    const [path, setPath] = useState(posts.meta.path);
+    const [nextCursor, setNextCursor] = useState(posts.meta.next_cursor);
 
     useEffect(() => {
         if (inView) {
-            axios.get(posts.links.next).then((response) => {
+            axios.get(`${path}?cursor=${nextCursor}`).then((response) => {
                 setPostsData([...postsData, ...response.data.data]);
+                setNextCursor(response.data.meta.next_cursor);
             });
         }
     }, [inView]);
