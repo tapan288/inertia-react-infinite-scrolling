@@ -11,7 +11,7 @@ export default function Index({ auth, posts }) {
     const [nextCursor, setNextCursor] = useState(posts.meta.next_cursor);
 
     useEffect(() => {
-        if (inView) {
+        if (inView && nextCursor !== null) {
             axios.get(`${path}?cursor=${nextCursor}`).then((response) => {
                 setPostsData([...postsData, ...response.data.data]);
                 setNextCursor(response.data.meta.next_cursor);
@@ -41,7 +41,7 @@ export default function Index({ auth, posts }) {
                         </div>
                     );
                 })}
-                <div ref={ref}></div>
+                <div className="-translate-y-32" ref={ref}></div>
             </div>
         </AuthenticatedLayout>
     );
