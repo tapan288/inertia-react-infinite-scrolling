@@ -9,11 +9,13 @@ use App\Http\Resources\PostResource;
 
 class PostController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $posts = Post::paginate(10);
 
-        // dd(PostResource::collection($posts));
+        if ($request->expectsJson()) {
+            return PostResource::collection($posts);
+        }
 
         return Inertia::render('Post/Index', [
             'posts' => PostResource::collection($posts)

@@ -1,5 +1,6 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { Head, router } from "@inertiajs/react";
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 
@@ -9,13 +10,8 @@ export default function Index({ auth, posts }) {
 
     useEffect(() => {
         if (inView) {
-            router.reload({
-                data: {
-                    page: posts.meta.current_page + 1,
-                },
-                onSuccess: (response) => {
-                    setPostsData([...postsData, ...response.props.posts.data]);
-                },
+            axios.get(posts.links.next).then((response) => {
+                setPostsData([...postsData, ...response.data.data]);
             });
         }
     }, [inView]);
