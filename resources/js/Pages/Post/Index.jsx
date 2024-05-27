@@ -1,13 +1,23 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head } from "@inertiajs/react";
-import { useEffect } from "react";
+import { Head, router } from "@inertiajs/react";
+import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 
 export default function Index({ auth, posts }) {
-    const { ref, inView, entry } = useInView({});
+    const { ref, inView } = useInView({});
+    const [postsData, setPostsData] = useState(posts.data);
 
     useEffect(() => {
-        console.log(inView);
+        if (inView) {
+            router.reload({
+                data: {
+                    page: posts.meta.current_page + 1,
+                },
+                onSuccess: (response) => {
+                    setPostsData([...postsData, ...response.props.posts.data]);
+                },
+            });
+        }
     }, [inView]);
 
     return (
@@ -22,7 +32,7 @@ export default function Index({ auth, posts }) {
             <Head title="Posts" />
 
             <div className="max-w-2xl mx-auto my-12 space-y-12">
-                {posts.data.map((post) => {
+                {postsData.map((post) => {
                     return (
                         <div key={post.id}>
                             <h1 className="font-bold text-3xl">
